@@ -15,7 +15,7 @@ export default class Login extends Component {
 
     if(!username.length) return;
 
-    localStorage.setItem('@rettiwt:username', username);
+    localStorage.setItem("@rettiwt:username", username);
 
     this.props.history.push('/timeline');
   };
