@@ -14,6 +14,7 @@ export default class TimeLine extends Component {
 
   async componentDidMount(){
     this.subscribeToEvents();
+
     const response = await api.get('tweets');
 
     this.setState({ tweets: response.data });
@@ -22,16 +23,20 @@ export default class TimeLine extends Component {
   subscribeToEvents = () => {
     const io = socket('http://localhost:3000');
 
-    io.on('tweet', data => {
-      this.setState({ tweets: [data, ...this.state.tweets] });
+    io.on("tweet", data => {
+      this.setState({ tweets: [data, ... this.state.tweets] });
     });
-    io.on('like', data => {
-      console.log(data);
+    
+    io.on("like", data => {
+      this.setState({ tweets: this.state.tweets.map(tweet =>
+          tweet._id === data._id ? data : tweet
+        ) })
     });
-  }
+  };
 
   handleNewTweet = async e => {
     if (e.keyCode !== 13) return;
+
     const content = this.state.newTweet;
     const author = localStorage.getItem("@rettiwt:username");
 
@@ -42,7 +47,7 @@ export default class TimeLine extends Component {
 
   handleInputChange = e => {
     this.setState({ newTweet: e.target.value });
-  }
+  };
 
   render() {
     return (
